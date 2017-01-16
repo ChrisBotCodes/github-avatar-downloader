@@ -19,21 +19,20 @@ function getRepoContributors(repoOwner, repoName, cb) {
     // deal with a possible error:
     if (error) {
       return error;
-    }
+    };
     if (response.statusCode === 200) {
       var data = JSON.parse(body);
-      console.log(data);
+      cb(error, data);
     }
   });
-    // .on('error', function(err) {
-    //   throw err;
-    // })
-    // .on('response', function(response) {
-    //   console.log(body);
-    // })
 }
 
 getRepoContributors("jquery", "jquery", function(err, result) {
-  console.log("Errors:", err);
-  console.log("Result:", result);
+  if (err) {
+    console.log("Errors:", err);
+    return err;
+  };
+  for (var i = 0; i < result.length; i++) {
+    console.log(result[i].avatar_url);
+  };
 });
