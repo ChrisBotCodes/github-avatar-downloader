@@ -19,22 +19,25 @@ function getRepoContributors(repoOwner, repoName, cb) {
     headers: {'user-agent': GITHUB_USER}
   };
 
-  request.get(options, function(error, response, body) {
-    // deal with a possible error:
-    if (error) {
-      return error;
-    };
-    if (response.statusCode === 200) {
-      var data = JSON.parse(body);
-      cb(null, data);
-    }
-  });
+  if (argRepo === undefined || process.argv.length > 4) {
+    throw "Program needs two arguments - user name and repo name";
+  } else {
+    request.get(options, function(error, response, body) {
+      // deal with a possible error:
+      if (error) {
+        return error;
+      };
+      if (response.statusCode === 200) {
+        var data = JSON.parse(body);
+        cb(error, data);
+      }
+    });
+  }
 }
 
 getRepoContributors(argOwner, argRepo, function(err, result) {
   if (err) {
-    console.log("Errors:", err);
-    return err;
+    throw err;
   };
   for (var i = 0; i < result.length; i++) {
     downloadImageByURL(result[i].avatar_url, "./avatars/" + result[i].login + ".jpg");
